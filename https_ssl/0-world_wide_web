@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Function to display information about a subdomain
+display_subdomain_info() {
+    DOMAIN=$1
+    SUBDOMAIN=$2
+
+    # Perform dig command to get the DNS record for the subdomain
+    RECORD=$(dig +short $SUBDOMAIN.$DOMAIN)
+
+    # Check if we received a valid record
+    if [ -z "$RECORD" ]; then
+        echo "No record found for $SUBDOMAIN.$DOMAIN"
+        return
+    fi
+
+    # Print the subdomain information
+    echo "The subdomain $SUBDOMAIN is a A record and points to $RECORD"
+}
+
+# Main script logic
+DOMAIN=$1
+SUBDOMAIN=$2
+
+# If no subdomain is provided, display information for all known subdomains
+if [ -z "$SUBDOMAIN" ]; then
+    display_subdomain_info $DOMAIN "www"
+    display_subdomain_info $DOMAIN "lb-01"
+    display_subdomain_info $DOMAIN "web-01"
+    display_subdomain_info $DOMAIN "web-02"
+else
+    # If a subdomain is provided, display information for the specific subdomain
+    display_subdomain_info $DOMAIN $SUBDOMAIN
+fi
